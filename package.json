@@ -1,0 +1,15 @@
+{
+  "name": "twitter-shell-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "true"
+  },
+  "author": "cympfh",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.81.0",
+    "twitter": "^1.7.1"
+  }
+}
