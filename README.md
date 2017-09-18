@@ -4,7 +4,10 @@ Executing tweets as shell command.
 
 ## Usage
 
-Tweet begins with `:!`.
+Command Tweets forms `PREFIX + shell-command + comment`.
+`PREFIX` is `:!` by default, and this is configuable.
+`comment` is optional, and must begins with `#` or `--`.
+`comment` will be ignored in running (this avoid tweet duplicate).
 
 example)
 

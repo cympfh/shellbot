@@ -13,8 +13,15 @@ function is_allow(command) {
     return (config.commands.indexOf(command) != -1);
 }
 
+function remove_comment(line) {
+    line = line.replace(/#.*$/, '');
+    line = line.replace(/--.*$/, '');
+    return line
+}
+
 function parse(line) {
     line = line.replace(re_prefix, '');
+    line = remove_comment(line);
     var words = line.split(' ').filter((x) => x != '');
     return words;
 }
