@@ -5,12 +5,16 @@ var { execFile } = require('child_process');
 var config = require('./.config.json');
 var client = new twitter(config.twitter);
 
+var prefix = ':!';
+if (config['prefix']) prefix = config.prefix;
+var re_prefix = RegExp('^' + prefix);
+
 function is_allow(command) {
     return (config.commands.indexOf(command) != -1);
 }
 
 function parse(line) {
-    line = line.replace(/^:!/, '');
+    line = line.replace(re_prefix, '');
     var words = line.split(' ').filter((x) => x != '');
     return words;
 }
@@ -69,10 +73,11 @@ function reply(username, id, debug=false) {
 
 function main() {
     client.stream('user', {}, (stream) => {
+        console.log('ready');
         stream.on('data', (tweet) => {
             var username = tweet.user.screen_name;
             var id = tweet.id_str;
-            if (tweet.text.indexOf(':!') == 0) {
+            if (tweet.text.indexOf(prefix) == 0) {
                 run(tweet.text, reply(username, id));
             }
         })
