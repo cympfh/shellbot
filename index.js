@@ -80,7 +80,11 @@ function main() {
             if (tweet.text.indexOf(prefix) == 0) {
                 run(tweet.text, reply(username, id));
             }
-        })
+        });
+        stream.on('end', (tweet) => {
+            console.log('end (restarting after 1 sec)');
+            setTimeout(main, 1000);
+        });
     })
 }
 
