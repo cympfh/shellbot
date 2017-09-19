@@ -6,13 +6,13 @@ Executing tweets as shell command.
 
 Command Tweets forms `PREFIX + shell-command + comment`.
 `PREFIX` is `:!` by default, and this is configuable.
-`comment` is optional, and must begins with `#` or `--`.
+`comment` is optional, and must begins with `#`.
 `comment` will be ignored in running (this avoid tweet duplicate).
 
 example)
 
 ```
-:!date
+:!date  # this is a comment
 ```
 
 Pipe (`|`), if-syntax, for-syntax cannot use.

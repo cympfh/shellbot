@@ -15,7 +15,6 @@ function is_allow(command) {
 
 function remove_comment(line) {
     line = line.replace(/#.*$/, '');
-    line = line.replace(/--.*$/, '');
     return line
 }
 
