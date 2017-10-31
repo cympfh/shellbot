@@ -81,7 +81,7 @@ function main() {
     client.stream('user', {}, (stream) => {
         console.log('ready');
         stream.on('data', (tweet) => {
-            if (!tweet || !tweet.user || tweet.text) return;
+            if (!tweet || !tweet.user || !tweet.text) return;
             var username = tweet.user.screen_name;
             var id = tweet.id_str;
             if (tweet.text.indexOf(prefix) == 0) {
@@ -96,4 +96,3 @@ function main() {
 }
 
 main();
-// run(':!date +%H', reply('cympfh', '1', true));
