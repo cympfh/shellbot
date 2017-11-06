@@ -78,10 +78,27 @@ function reply(username, id, debug=false) {
     }
 }
 
-function main() {
+(function () {
+
+    var suicide = () => {
+        console.log("Good bye, world");
+        process.exit();
+    };
+
+    var last_time = (new Date()).getTime();
+
     client.stream('user', {}, (stream) => {
+
+        setInterval(() => {
+            var now = (new Date()).getTime();
+            var dmin = (now - last_time) / 1000 / 60;
+            if (dmin > 10) suicide();
+        }, 60);
+
         console.log('ready');
+
         stream.on('data', (tweet) => {
+            last_time = (new Date()).getTime();
             if (!tweet || !tweet.user || !tweet.text) return;
             var username = tweet.user.screen_name;
             var id = tweet.id_str;
@@ -90,10 +107,12 @@ function main() {
                 run(text, reply(username, id));
             }
         });
-        stream.on('end', (tweet) => {
-            console.log('end (restarting after 1 sec)');
-            setTimeout(main, 1000);
-        });
-    })
-}
 
+        stream.on('end', () => suicide());
+        stream.on('disconnect', () => suicide());
+        stream.on('destroy', () => suicide());
+        stream.on('close', () => suicide());
+        stream.on('error', () => suicide());
+    });
+
+}());
