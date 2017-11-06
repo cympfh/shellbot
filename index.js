@@ -13,14 +13,15 @@ function is_allow(command) {
     return (config.commands.indexOf(command) != -1);
 }
 
-function remove_comment(line) {
-    line = line.replace(/#.*$/, '');
-    return line
+// before prefix-check
+function trim(text) {
+    text = text.replace(/[ \.]*@ampeloss */g, '');
+    text = text.replace(/#.*$/, '');
+    return text;
 }
 
 function parse(line) {
     line = line.replace(re_prefix, '');
-    line = remove_comment(line);
     var words = line.split(' ').filter((x) => x != '');
     return words;
 }
@@ -84,8 +85,9 @@ function main() {
             if (!tweet || !tweet.user || !tweet.text) return;
             var username = tweet.user.screen_name;
             var id = tweet.id_str;
-            if (tweet.text.indexOf(prefix) == 0) {
-                run(tweet.text, reply(username, id));
+            var text = trim(tweet.text);
+            if (text.indexOf(prefix) == 0) {
+                run(text, reply(username, id));
             }
         });
         stream.on('end', (tweet) => {
@@ -95,4 +97,3 @@ function main() {
     })
 }
 
-main();
