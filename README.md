@@ -38,6 +38,26 @@ $ cat .config.json
 
 The `commands` is a white list, executables.
 
+### allowed executable scripts
+
+All under `./bin` and global command listed in `commands` filed of `.config.json` are allowed to executable.
+
+#### protocol
+
+All script has no input (stdin).
+
+The output (stdout + stderr if exsists) will be posted (as a reply tweet).
+
+##### RT
+
+When stdout forms
+
+```
+RT (status-url)
+```
+
+, bot will RT it (please see `bin/ika` as a sample).
+
 ## dependencies
 
 - node

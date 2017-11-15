@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo -n "RT "
+USERNAME=splatoon2_stage
+URL="/1.1/statuses/user_timeline.json?screen_name=${USERNAME}&count=1"
+twurl -X GET "$URL" | jq -r '.[].id_str' | tail -1

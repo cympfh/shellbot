@@ -1,3 +1,4 @@
+var fs = require('fs');
 var request = require('request');
 var twitter = require('twitter');
 var { execFile } = require('child_process');
@@ -8,6 +9,10 @@ var client = new twitter(config.twitter);
 var prefix = ':!';
 if (config['prefix']) prefix = config.prefix;
 var re_prefix = RegExp('^' + prefix);
+
+// see ./bin/(executable)
+process.env.PATH = `./bin:${process.env.PATH}`
+config.commands = config.commands.concat(fs.readdirSync('./bin'))
 
 function is_allow(command) {
     return (config.commands.indexOf(command) != -1);
@@ -33,37 +38,37 @@ function run(line, cont) {
         console.log(words[0], words.slice(1));
         execFile(words[0], words.slice(1), (error, stdout, stderr) => {
             if (error) {
-                console.warn('Error occured white execFile:', words);
-                console.warn(error);
+                console.log(`Error: ${error}`);
+                cont(`Error: ${error}`);
+            } else {
+                var text = stdout.trim();
+                if (stderr) {
+                    text = '\nStderr: ' + stderr.trim();
+                }
+                console.log(text);
+                cont(text);
             }
-            cont(stdout, stderr);
         });
     } else {
-        cont('', `command not found: ${words[0]}`);
+        console.log(`command not found: ${words[0]}`);
+        cont(`command not found: ${words[0]}`);
     }
 }
 
-function reply(username, id, debug=false) {
-    return (stdout, stderr) => {
+function reply(username, id) {
+    return (text) => {
 
         var post = (status) => {
             console.log('post', status);
-            if (!debug) {
-                client.post('statuses/update', {
-                    status: status,
-                    in_reply_to_status_id: id
-                }, (error, tweet, response) => {
-                    if (error) console.warn(error);
-                });
-            }
+            client.post('statuses/update', {
+                status: status,
+                in_reply_to_status_id: id
+            }, (error, tweet, response) => {
+                if (error) console.warn(error);
+            });
         };
 
-        var status = '';
-        if (stdout) status += stdout;
-        if (stdout && stderr) status += '\n';
-        if (stderr) status += stderr;
-
-        var lines = status.split('\n');
+        var lines = text.split('\n');
         var status = `@${username}`;
         for (var line of lines) {
             status_n = `${status}\n${line}`;
@@ -75,6 +80,35 @@ function reply(username, id, debug=false) {
             }
         }
         post(status);
+    }
+}
+
+function retweet(url_or_id) {
+    const fs = url_or_id.trim().split('/');
+    const id = fs[fs.length - 1];
+    console.log('RT', id);
+    client.post(`statuses/unretweet/${id}`, {}, (err, _, __) => {
+        if (err) { console.warn(err); return; }
+        client.post(`statuses/retweet/${id}`, {}, (err, _, __) => {
+            if (err) { console.warn(err); return; }
+        });
+    });
+}
+
+function broadcast(username, id) {
+    return (result) => {
+
+        if (/^RT  */.test(result)) {
+
+            const url_or_id = result.replace(/^RT */, '');
+            retweet(url_or_id);
+
+        } else {
+
+            // just post
+            reply(username, id)(result);
+
+        }
     }
 }
 
@@ -104,7 +138,7 @@ function reply(username, id, debug=false) {
             var id = tweet.id_str;
             var text = trim(tweet.text);
             if (text.indexOf(prefix) == 0) {
-                run(text, reply(username, id));
+                run(text, broadcast(username, id));
             }
         });
 
