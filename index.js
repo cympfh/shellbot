@@ -43,7 +43,7 @@ function run(line, cont) {
             } else {
                 var text = stdout.trim();
                 if (stderr) {
-                    text = '\nStderr: ' + stderr.trim();
+                    text += '\nStderr: ' + stderr.trim();
                 }
                 console.log(text);
                 cont(text);
