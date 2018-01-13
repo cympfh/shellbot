@@ -1,14 +1,16 @@
-var fs = require('fs');
-var request = require('request');
-var twitter = require('twitter');
-var { execFile } = require('child_process');
+const fs = require('fs');
+const request = require('request');
+const twitter = require('twitter');
+const { execFile } = require('child_process');
 
-var config = require('./config.json');
-var client = new twitter(config.twitter);
+const config = require('./config.json');
+const client = new twitter(config.twitter);
 
-var prefix = ':!';
-if (config['prefix']) prefix = config.prefix;
-var re_prefix = RegExp('^' + prefix);
+const prefix = config.prefix === undefined ? ':!' : config.prefix;
+const re_prefix = RegExp('^' + prefix);
+
+const ignore_unknown_command =
+    config.ignore_unknown_command === undefined ? false : config.ignore_unknown_command;
 
 // see ./bin/(executable)
 process.env.PATH = `./bin:${process.env.PATH}`
@@ -51,7 +53,9 @@ function run(line, cont) {
         });
     } else {
         console.log(`command not found: ${words[0]}`);
-        cont(`command not found: ${words[0]}`);
+        if (! ignore_unknown_command) {
+            cont(`command not found: ${words[0]}`);
+        }
     }
 }
 
@@ -137,7 +141,7 @@ function broadcast(username, id) {
             var username = tweet.user.screen_name;
             var id = tweet.id_str;
             var text = trim(tweet.text);
-            if (text.indexOf(prefix) == 0) {
+            if (re_prefix.test(text)) {
                 run(text, broadcast(username, id));
             }
         });

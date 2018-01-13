@@ -38,6 +38,18 @@ $ cat .config.json
 
 The `commands` is a white list, executables.
 
+### prefix
+
+`config.prefix` is the prefix of command text, which can be RegExp.
+
+```bash
+{
+    "twitter": { },
+    "commands": [ ],
+    "prefix": "(:|~)"
+}
+```
+
 ### allowed executable scripts
 
 All under `./bin` and global command listed in `commands` filed of `.config.json` are allowed to executable.

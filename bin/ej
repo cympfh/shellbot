@@ -1,0 +1,4 @@
+#!/bin/bash
+
+grep "^$1" /usr/share/EngJa | sed 's/\t /\n  /; s/ \/ /\n  /g' |
+    head -n 10
