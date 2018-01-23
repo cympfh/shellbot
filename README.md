@@ -70,6 +70,18 @@ RT (status-url)
 
 , bot will RT it (please see `bin/ika` as a sample).
 
+##### Image (text with medias)
+
+Follow the local paths of the images (separated by space) after `IMAGE` at the 1st line.
+
+```
+IMAGE (path1) (path2) (path3)
+(text)
+```
+
+The bot will tweets the text with medias.
+
+
 ## dependencies
 
 - node

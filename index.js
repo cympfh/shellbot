@@ -87,6 +87,43 @@ function reply(username, id) {
     }
 }
 
+function reply_with_medias(username, id) {
+    return (text, paths) => {
+
+        function post(media_ids) {
+            console.log('post', text, media_ids);
+            const status = `@${username}`.slice(0, 140);
+            client.post('statuses/update', {
+                status: status,
+                in_reply_to_status_id: id,
+                media_ids: media_ids.join(',')
+            }, (error, tweet, response) => {
+                if (error) console.warn(error);
+            });
+        };
+
+        // upload
+        function loop(i, media_ids) {
+
+            if (i >= paths.length) {
+                return post(media_ids);
+            }
+
+            const path = paths[i];
+            const data = fs.readFileSync(path);
+            client.post('media/upload', {media: data}, (err, media, response) => {
+                if (err) {
+                    console.warn(err);
+                }
+                const media_id = media.media_id_string;
+                media_ids.push(media_id);
+                loop(i + 1, media_ids);
+            });
+        }
+        loop(0, []);
+    }
+}
+
 function retweet(url_or_id) {
     const fs = url_or_id.trim().split('/');
     const id = fs[fs.length - 1];
@@ -106,6 +143,13 @@ function broadcast(username, id) {
 
             const url_or_id = result.replace(/^RT */, '');
             retweet(url_or_id);
+
+        } else if (/^IMAGE */.test(result)) {
+
+            const lines = result.split('\n');
+            const paths = lines[0].split(' ').slice(1);
+            const text = lines.slice(1).join('\n');
+            reply_with_medias(username, id)(text, paths);
 
         } else {
 

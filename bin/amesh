@@ -1,0 +1,4 @@
+#!/bin/bash
+
+~/bin/amesh >/dev/null 2>&1
+echo "IMAGE /tmp/amesh.jpg"
