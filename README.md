@@ -1,66 +1,77 @@
-# Twitter Shell bot
+# Mastodon Shell bot
 
-Executing tweets as shell command.
+Executing toots as shell commands.
 
 ## Usage
 
-Command Tweets forms `PREFIX + shell-command + comment`.
-`PREFIX` is `:!` by default, and this is configuable.
-`comment` is optional, and must begins with `#`.
-`comment` will be ignored in running (this avoid tweet duplicate).
-
-example)
+Command Tweets forms like
 
 ```
-:!date  # this is a comment
+PREFIX shell-command comment
 ```
 
+`PREFIX` is `:` by default, and this is configuable.
+`comment` is optional, and must begins with `#`. This can use to avoid toot duplication.
+`shell-command` string will be executed.
+
+### example
+
+```
+:date  # this is a comment
+```
+
+### NOTE
+
+In fact, commands will be executed not through shell (contrary to the name).
 Pipe (`|`), if-syntax, for-syntax cannot use.
-Just one process can be executed,
-and allowing commands are specified by a white list (for security).
+Moreover allowing commands are specified by a white list for security.
 
 ## config
 
 ```bash
-$ cat .config.json
+$ cat config.json
 {
-    "twitter": {
-        "consumer_key": "******************1F*Q",
-        "consumer_secret": "J************************************BEGtg",
-        "access_token_key": "************************************************FC",
-        "access_token_secret": "t********************************************"
+    "mastodon": {
+        "server": "mstdn.jp",
+        "access_token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "port": 8080
     },
+    "prefix": ":",
     "commands": [
-        "date"
+        "cal",
+        "date",
+        "echo"
     ]
 }
 ```
 
-The `commands` is a white list, executables.
-
 ### prefix
 
-`config.prefix` is the prefix of command text, which can be RegExp.
+`PREFIX` can be specified as `.prefix` in `config.json`.
+This is written as regular expression.
 
 ```bash
 {
-    "twitter": { },
-    "commands": [ ],
+    "mastodon": { ... },
+    "commands": [ ... ],
     "prefix": "(:|~)"
 }
 ```
 
 ### allowed executable scripts
 
-All under `./bin` and global command listed in `commands` filed of `.config.json` are allowed to executable.
+In `config.json`, `.commands` list is the white list.
+The commands in this list is executable.
 
-#### protocol
+Additionally, all executable files under `./bin` is executable.
+
+## protocol
 
 All script has no input (stdin).
 
 The output (stdout + stderr if exsists) will be posted (as a reply tweet).
 
-##### RT
+### RT
 
 When stdout forms
 
@@ -70,7 +81,7 @@ RT (status-url)
 
 , bot will RT it (please see `bin/ika` as a sample).
 
-##### Image (text with medias)
+### Image (text with medias)
 
 Follow the local paths of the images (separated by space) after `IMAGE` at the 1st line.
 

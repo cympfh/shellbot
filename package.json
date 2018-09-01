@@ -9,7 +9,6 @@
   "author": "cympfh",
   "license": "MIT",
   "dependencies": {
-    "request": "^2.81.0",
-    "twitter": "^1.7.1"
+    "express": "^4.16.3"
   }
 }
