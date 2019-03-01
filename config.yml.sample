@@ -1,0 +1,7 @@
+mastodon:
+  server: mstdn.jp
+  access_token: 0000000000000000000000000000000000000000000000000000000000000000
+prefix: ":!"
+commands:
+  - echo
+  - date

@@ -26,44 +26,38 @@ In fact, commands will be executed not through shell (contrary to the name).
 Pipe (`|`), if-syntax, for-syntax cannot use.
 Moreover allowing commands are specified by a white list for security.
 
-## config
+## config (YAML file)
 
 ```bash
-$ cat config.json
-{
-    "mastodon": {
-        "server": "mstdn.jp",
-        "access_token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "port": 8080
-    },
-    "prefix": ":",
-    "commands": [
-        "cal",
-        "date",
-        "echo"
-    ]
-}
+$ cat config.yml
+mastodon:
+    server: mstdn.jp
+    access_token: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    port: 8080
+prefix: ":!"
+commands:
+  - echo
+  - date
+  - tenki
 ```
 
-### prefix
+### `prefix`
 
-`PREFIX` can be specified as `.prefix` in `config.json`.
+`PREFIX` can be specified as `prefix` in `config.yml`.
 This is written as regular expression.
 
-```bash
-{
-    "mastodon": { ... },
-    "commands": [ ... ],
-    "prefix": "(:|~)"
-}
+#### Example
+
+```yaml
+prefix: "(:|~)"
 ```
 
-### allowed executable scripts
+### allowed executable `commands`
 
-In `config.json`, `.commands` list is the white list.
-The commands in this list is executable.
+`commands` is the list of allowed commands.
+Each command should be executable (note to PATH).
 
-Additionally, all executable files under `./bin` is executable.
+Additionally, all executable files under `./bin` is executable (no need to write in `commands`).
 
 ## protocol
 

@@ -1,8 +1,9 @@
 const fs = require('fs');
 const mastodon = require('./core/mastodon');
 const { execFile } = require('child_process');
+const yaml = require('node-yaml');
 
-const config = require('./config.json');
+const config = yaml.readSync('./config.yml');
 
 const mast = new mastodon.Client(config.mastodon);
 
