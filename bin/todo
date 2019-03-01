@@ -1,0 +1,4 @@
+#!/bin/bash
+
+NUM=${1:-1}
+curl -s "http://s.cympfh.cc/cympfh/memo?q=%23todo&tail=$NUM"
