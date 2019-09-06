@@ -78,12 +78,21 @@ function broadcast(username, id) {
 
 mastodon.stream((event) => {
     if (event.event_type == 'update') {
-        var data = event.data;
-        var username = data.account.acct;
-        var id = data.id;
-        var text = trim(data.content);
-        if (re_prefix.test(text)) {
-            run(text, broadcast(username, id));
+        if (event.data && event.account && event.account.acct) { // mastodon
+            var data = event.data;
+            var username = data.account.acct;
+            var id = data.id;
+            var text = trim(data.content);
+            if (re_prefix.test(text)) {
+                run(text, broadcast(username, id));
+            }
+        } else if (event.data && event.data.icon && event.data.screenname) { // twitter
+            var username = null;
+            var id = null;
+            var text = trim(event.data.text);
+            if (re_prefix.test(text)) {
+                run(text, broadcast(username, id));
+            }
         }
     }
 }, (config.mastodon.port ? config.mastodon.port : 8080));

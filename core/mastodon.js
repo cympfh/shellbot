@@ -12,7 +12,13 @@ class Client {
         var url = `https://${this.server}/api/v1/statuses`;
         var status = encodeURIComponent(`@${username} ${msg}`);
         var data = `visibility=unlisted&in_reply_to_id=${id}&status=${status}`;
-        curl.post(url, {data: data}, {headers: [`Authorization: Bearer ${this.access_token}`]});
+        if (id == null) {
+            status = encodeURIComponent(`${msg}`);
+            data = `visibility=unlisted&status=${status}`;
+        }
+        console.log(url, data);
+        var ret = curl.post(url, {data: data}, {headers: [`Authorization: Bearer ${this.access_token}`]});
+        console.log(ret);
     }
 
     reply_with_medias(username, id, msg, media_paths) {
@@ -29,10 +35,16 @@ class Client {
         var url = `https://${this.server}/api/v1/statuses`;
         var status = encodeURIComponent(`@${username} ${msg}`);
         var data = `visibility=unlisted&in_reply_to_id=${id}&status=${status}`;
+        if (id == null) {
+            status = encodeURIComponent(`${msg}`);
+            data = `visibility=unlisted&status=${status}`;
+        }
         for (var id of media_ids) {
             data = `${data}&media_ids[]=${id}`;
         }
-        curl.post(url, {data: data}, {headers: [`Authorization: Bearer ${this.access_token}`]});
+        console.log(url, data);
+        var ret = curl.post(url, {data: data}, {headers: [`Authorization: Bearer ${this.access_token}`]});
+        console.log(ret);
     }
 
     retweet(url_or_id) {
@@ -48,6 +60,8 @@ class Client {
 function stream(callback, port=8080) {
 
     var app = require('express')();
+    var morgan = require('morgan');
+    app.use(morgan('dev', {immediate: true}));
 
     app.post('/', (req, res) => {
         var body = '';
