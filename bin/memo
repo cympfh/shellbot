@@ -2,15 +2,15 @@
 
 usage() {
     cat <<EOM
-SYNOPSIS: todo 4  # show last 4 todos
-          todo grep "test"  # show all includes "test"
-          todo 3 grep "test"  # grep and limit
+SYNOPSIS: memo 4  # show last 4 memos
+          memo grep "test"  # show all includes "test"
+          memo 3 grep "test"  # grep and limit
 EOM
     exit
 }
 
 NUM=1
-Q="%23todo"
+Q="%23memo"
 
 while [ $# -gt 0 ]; do
     case "$1" in
