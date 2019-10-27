@@ -78,11 +78,12 @@ function broadcast(username, id) {
 
 mastodon.stream((event) => {
     if (event.event_type == 'update') {
-        if (event.data && event.account && event.account.acct) { // mastodon
+        if (event.data && event.data.account && event.data.account.acct) { // mastodon
             var data = event.data;
             var username = data.account.acct;
             var id = data.id;
             var text = trim(data.content);
+            console.log(event.event_type, username, text);
             if (re_prefix.test(text)) {
                 run(text, broadcast(username, id));
             }
@@ -90,6 +91,7 @@ mastodon.stream((event) => {
             var username = null;
             var id = null;
             var text = trim(event.data.text);
+            console.log(event.event_type, username, text);
             if (re_prefix.test(text)) {
                 run(text, broadcast(username, id));
             }
